@@ -34,4 +34,4 @@ def calculate_entire_time(time_ranges: str) -> str:
 if __name__ == '__main__':
     import sys
 
-    print(calculate_entire_time(sys.argv[1]))
+    print(calculate_entire_time(' '.join(sys.argv[1:])))
