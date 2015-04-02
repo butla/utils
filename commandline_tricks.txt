@@ -1,0 +1,2 @@
+# synchronizacja muzyki bedac na karcie SD (usun "n")
+rsync --exclude "#*" -ruvn ../Dane/Muzyka/ muzyka/
