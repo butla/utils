@@ -1,0 +1,49 @@
+---
+# [ręcznie] najpierw trzeba ustawić klucz ssh (a może zalogować się przez haslo i ustawic authorized keys)
+
+# TODO tylko jak nie da sie zalogowac z userem butla
+- name: user access and account setup
+  hosts: all
+  remote_user: pi
+
+  tasks:
+  # TODO  ustawić usera z silnym haslem
+  - name: ssh key for pi user
+    copy: src=authorized_keys dest={{ ansible_env.HOME }}/.ssh/
+
+- name: set up backup server
+  hosts: all
+  remote_user: pi
+  become: true
+
+  tasks:
+  - name: ensure ntfs-3g is there for mounts
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600 
+      name: ntfs-3g
+      state: latest
+  - name: mount drive for backups
+    mount:
+      name: /data
+      src: 'UUID=3248F2D948F29AB5'
+      fstype: ntfs-3g
+      opts: rw,user,auto,fmask=0117,dmask=0007,gid=sudo
+      state: mounted
+
+- name: generic system update
+  hosts: all
+  remote_user: pi # TODO powinno byc na butla
+  become: true
+
+  tasks:
+  - name: american locale
+    locale_gen: name=en_US.UTF-8 state=present
+  - name: polish locale
+    locale_gen: name=pl_PL.UTF-8 state=present
+  - name: update package info
+    apt: update_cache=yes cache_valid_time=3600
+  - name: upgrade system
+    apt: upgrade=dist
+
+
