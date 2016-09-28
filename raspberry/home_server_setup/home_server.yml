@@ -1,20 +1,57 @@
 ---
-# [ręcznie] najpierw trzeba ustawić klucz ssh (a może zalogować się przez haslo i ustawic authorized keys)
-
-# TODO tylko jak nie da sie zalogowac z userem butla
-- name: user access and account setup
+- name: server user account setup
   hosts: all
   remote_user: pi
+  vars_files:
+  - passwords.yml
+  vars:
+    server_user: butla
+    ansible_become_pass: raspberry
 
   tasks:
-  # TODO  ustawić usera z silnym haslem
-  - name: ssh key for pi user
-    copy: src=authorized_keys dest={{ ansible_env.HOME }}/.ssh/
+  - name: detect default server user
+    local_action: shell ssh pi@{{ inventory_hostname }} "echo connected..."
+    register: pi_user_exists
+  - name: create server user
+    when: pi_user_exists.rc == 0
+    user:
+      name: "{{ server_user }}"
+      groups: pi,adm,dialout,cdrom,sudo,audio,video,plugdev,games,users,input,netdev,gpio,i2c,spi
+      password: "{{server_user_password}}"
+    become: true
+  - name: set server user authorized ssh key
+    when: pi_user_exists.rc == 0
+    copy: src=authorized_keys dest=/home/{{ server_user }}/.ssh/
+    become: true
+    become_user: "{{ server_user }}"
+
+- name: removing default pi user
+  hosts: all
+  remote_user: butla
+  become: true
+  vars_files:
+  - passwords.yml
+  vars:
+    ansible_become_pass: "{{ server_user_password_raw }}"
+
+  tasks:
+  - name: kill pi user processes
+    command: pkill -u pi
+    register: pkill_out
+    changed_when: pkill_out.rc == 0
+  - name: remove pi user
+    user: name=pi state=absent
+
+  # TODO przerob na role
 
 - name: set up backup server
   hosts: all
-  remote_user: pi
+  remote_user: butla
   become: true
+  vars_files:
+  - passwords.yml
+  vars:
+    ansible_become_pass: "{{ server_user_password_raw }}"
 
   tasks:
   - name: ensure ntfs-3g is there for mounts
@@ -30,11 +67,20 @@
       fstype: ntfs-3g
       opts: rw,user,auto,fmask=0117,dmask=0007,gid=sudo
       state: mounted
+  - name: install hdparm
+    apt: name=hdparm state=latest
+  - name: set disk spindown
+    # 12 * 5 = 60 seconds
+    command: hdparm -S 12 /dev/disk/by-uuid/3248F2D948F29AB5
 
 - name: generic system update
   hosts: all
-  remote_user: pi # TODO powinno byc na butla
+  remote_user: butla # TODO potem bez podawania hasla z vaulta, tylko od usera
   become: true
+  vars_files:
+  - passwords.yml
+  vars:
+    ansible_become_pass: "{{ server_user_password_raw }}"
 
   tasks:
   - name: american locale
@@ -45,5 +91,4 @@
     apt: update_cache=yes cache_valid_time=3600
   - name: upgrade system
     apt: upgrade=dist
-
 
