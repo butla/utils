@@ -32,6 +32,10 @@
 - name: remove pi user
   user: name=pi state=absent
 
+# needed if authorized keys need to be changed after initial user setup
+- name: update authorized ssh keys
+  copy: src=authorized_keys dest=/home/{{ server_user }}/.ssh/
+
 - name: ensure ntfs-3g is there for mounts
   apt:
     update_cache: yes
