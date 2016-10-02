@@ -1,0 +1,9 @@
+---
+- name: main machine setup
+  hosts: localhost
+  become: true
+
+  roles:
+  - common
+  - dev_machine
+

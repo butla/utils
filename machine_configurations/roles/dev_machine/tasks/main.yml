@@ -1,0 +1,136 @@
+---
+- name: install python-apt
+  command: apt install python-apt
+  register: install_output
+  changed_when: install_output.stdout.find('python-apt is already the newest') == -1
+
+- name: install programs
+  apt: name={{ item }}
+  with_items:
+  - curl
+  - expect # needed for unbuffer tool used in ranger config creation hack
+  - git
+  - highlight # syntax coloring in ranger file preview
+  - nmap
+  - python3-pip
+  - python3-dev
+  - python-pip
+  - python-dev
+  - ranger
+  - tmux
+  - tree
+  - vim
+  - xclip # for tmux-yank
+
+- name: upgrade pip for python 3
+  pip: name=pip executable=pip3 state=latest
+  
+- name: upgrade pip for python 2
+  pip: name=pip executable=pip2 state=latest
+
+- name: install python tools
+  pip:
+    name: "{{ item }}"
+    executable: pip3
+    extra_args: --user
+  with_items:
+  - httpie
+  - ptpython
+  - subliminal
+  - tox
+  - virtualenvwrapper
+  become: false
+
+- name: setup tmux plugins
+  git: repo=https://github.com/tmux-plugins/tpm dest={{ user_home }}/.tmux/plugins/tpm
+  become: false
+
+- name: create directories for vim plugins
+  file: path={{ user_home }}/.vim/{{ item }} state=directory
+  with_items:
+  - autoload
+  - bundle
+  become: false
+
+- name: setup vim plugin system
+  get_url:
+    url: https://tpo.pe/pathogen.vim
+    dest: "{{ user_home }}/.vim/autoload/pathogen.vim"
+  become: false
+
+- name: install vim-jedi
+  git:
+    repo: https://github.com/davidhalter/jedi-vim.git
+    dest: "{{ user_home }}/.vim/bundle/jedi-vim"
+  become: false
+
+- name: create ptpython config folder
+  file: path={{ user_home }}/.ptpython state=directory
+  become: false
+
+- name: set configuration files
+  copy: src={{ item }} dest={{ user_home }}
+  with_items:
+  - .bash_aliases
+  - .bashrc
+  - .gitconfig
+  - .ptpython
+  - .tmux.conf
+  - .vimrc
+  become: false
+
+- name: create ranger configs
+  # unbuffer is used to fake a interactive terminal,
+  # because the current stable version of ranger refuses to create a config
+  command: unbuffer ranger --copy-config={{ item }}
+  with_items:
+  - rc
+  - scope
+  register: config_creation
+  changed_when: config_creation.stdout.find('creating:') != -1
+  become: false
+
+- name: ranger settings in rc.conf
+  lineinfile:
+    dest: "{{ user_home }}/.config/ranger/rc.conf"
+    line: "{{ item.line }}" 
+    regexp: "{{ item.regexp }}"
+  with_items:
+  - { line: "map <DELETE>   console delete", regexp: "map <DELETE>"}
+  - { line: "set show_hidden true", regexp: "set show_hidden .+" }
+  - { line: "set collapse_preview false", regexp: "set collapse_preview" }
+  - { line: "set dirname_in_tabs true", regexp: "set dirname_in_tabs" }
+  become: false
+
+- name: ranger settings in rifle.conf
+  copy: src=rifle.conf dest={{ user_home }}/.config/ranger
+  become: false
+
+# dodaj pudb dla pythona 2 i 3, do tego jeszcze config
+ 
+# KUBUNTU
+# configi z dropboxa!
+#  vlc, gthumb, chromium-browser, clementine, synaptic, gimp, inkscape (trzeba dodać ppa), hunspell
+
+#- konsole font: Deja Vu Sans Mono, 10, Book (wszystko w edycji domyślnego profilu)
+#- konsole transparency: 20%
+#- polskie ustawienia daty, liczb, itp (ale nie cały region)
+#- zegar z sekundami i datą, bold
+#- sterowniki do grafiki (powinno sprawdzać, czy jest nvidia, czy radeon)
+#- dropbox (deb ze strony)
+#- keepass2. Ustawić bazę z Dropboxa, ustawić opcję autolocka po 5 minutach.
+#- system setting/startup and shutdown/"start with an empty sesssion", też default leave option: turn off computer
+#- import moich skrótów
+#- "Configure automatic handling of removable storage media" -> "Enable automatic mounting of removable media"
+#- schować w treyu: komunikatory, organizer deamon
+#- w vlc przewijanie na strzałki, zamiast shift+strzałki. Navigate left/right ustawić na shift+strzałki.
+#- docker (install ze skryptu i restart)
+#- apt install sshpass (żeby można było konfigurować raspberry)
+# pycharm z ustawieniami
+# bookmarks w rangerze - development, downloads, Dropbox
+
+# GŁÓWNY
+# mount danych
+# klucz prywatny do backupów
+# backup (już nic do dropboxa, wszystko na dysk)
+# bookmarks w rangerze
