@@ -2,23 +2,101 @@
 - name: set konsole settings
   copy: src=konsole/{{ item.src }} dest={{ item.dest }}
   vars:
-    konsole_share: "{{ user_home }}/.local/share/konsole"
+    konsole_share: "{{ ansible_env.HOME }}/.local/share/konsole"
   with_items:
   - { src: Butla.profile, dest: '{{ konsole_share }}' }
   - { src: Linux.colorscheme, dest: '{{ konsole_share }}' }
-  - { src: konsolerc, dest: "{{ user_home }}/.config" }
+  - { src: konsolerc, dest: "{{ ansible_env.HOME }}/.config" }
+
+- name: add dropbox repository
+  apt_repository: repo='deb http://linux.dropbox.com/ubuntu xenial main'
+  become: true
+
+- name: add dropbox package key
+  apt_key: keyserver=pgp.mit.edu id=5044912E
+  become: true
+
+- name: install python-gpgme for dropbox bootstrap
+  apt: name=python-gpgme
+  become: true
+
+# TODO get rid of unauthorized deb workaround when they fix it
+#- name: install dropbox
+#  apt: name=dropbox update_cache=yes
+#  become: true
+- name: install dropbox
+  command: apt-get install -y --allow-unauthenticated dropbox
+  register: dropbox_install
+  changed_when: dropbox_install.stdout.find('is already the newest') == -1
+  become: true
+
+- name: start and install dropbox daemon
+  command: dropbox start -i
+  register: dropbox_start
+  changed_when: dropbox_start.stdout.find('is already running!') == -1
+
+- name: create keepass configuration directory
+  file: path={{ ansible_env.HOME }}/.config/KeePass state=directory
+
+- name: set keepass configuration
+  copy: src=KeePass.config.xml dest={{ ansible_env.HOME }}/.config/KeePass
+
+- name: add inkscape repository
+  apt_repository: repo=ppa:inkscape.dev/stable
+  become: true
+
+- name: install additional programs
+  apt: name={{ item }} update_cache=yes cache_valid_time=3600
+  with_items:
+  - chromium-browser
+  - clementine
+  - gimp
+  - gthumb
+  - hunspell
+  - inkscape
+  # user needs to log in with Dropbox before running keepass
+  - keepass2
+  - synaptic
+  - vlc
+  become: true
+
+- name: create GnuPG config directory
+  file: path={{ ansible_env.HOME }}/.gnupg state=directory
+
+- name: set configuration in HOME directory
+  copy: src=.pypirc dest={{ ansible_env.HOME }}
+  with_items:
+  - .gnupg
+  - .pypirc
+
+- name: install twine
+  pip: name=twine executable=pip3 extra_args=--user
+
+- name: setup develompent directory
+  file: path={{ ansible_env.HOME }}/development state=directory
+
+- name: set ranger bookmarks
+  lineinfile:
+    dest: "{{ ansible_env.HOME }}/.config/ranger/bookmarks"
+    line: "{{ item.line }}"
+    regexp: "{{ item.regexp }}"
+    create: yes
+  with_items:
+  - { line: "c:{{ ansible_env.HOME }}/Dropbox", regexp: "^c:" }
+  - { line: "D:{{ ansible_env.HOME }}/Downloads", regexp: "^D:" }
+  - { line: "w:{{ ansible_env.HOME }}/development", regexp: "^w:" }
+  - { line: "h:{{ ansible_env.HOME }}", regexp: "^h:" }
+
+# TODO copy khotkeysrc do .config/
+# TODO ustaw w kglobalshortcutsrc wartosci z roznice_global_shortcuts
+# TODO launcher chyba trzeba ustawić w plasma-org.kde.plasma.desktop-appletsrc, pod [Containments][1][Applets][2][Shortcuts]
 
 # KUBUNTU
-#- dropbox (deb ze strony)
-#- keepass2. Ustawić bazę z Dropboxa, ustawić opcję autolocka po 5 minutach.
-# configi z dropboxa!
-#- import moich skrótów
-# bookmarks w rangerze - development, downloads, Dropbox
-#  vlc, gthumb, chromium-browser, clementine, synaptic, gimp, inkscape (trzeba dodać ppa), hunspell
+# kalkulator na guzik kalkulatora
 
 #- polskie ustawienia daty, liczb, itp (ale nie cały region)
 #- zegar z sekundami i datą, bold
-#- sterowniki do grafiki (powinno sprawdzać, czy jest nvidia, czy radeon)
+#- sterowniki do grafiki (powinno sprawdzać, czy jest nvidia, czy radeon) / cos, zeby video dobrze chodzilo?
 #- system setting/startup and shutdown/"start with an empty sesssion", też default leave option: turn off computer
 #- "Configure automatic handling of removable storage media" -> "Enable automatic mounting of removable media"
 #- schować w treyu: komunikatory, organizer deamon
@@ -26,10 +104,12 @@
 #- docker (install ze skryptu i restart)
 #- apt install sshpass (żeby można było konfigurować raspberry)
 # pycharm z ustawieniami
+# pycharm i keepass do favouritów
+# wyłączenie launchera
 
 # GŁÓWNY
 # mount danych
 # klucz prywatny do backupów
 # backup (już nic do dropboxa, wszystko na dysk)
 # bookmarks w rangerze
-
+# thunderbird i ustawienie jego backup, muszę zgrać jego dotychczasowe wiadomości?
