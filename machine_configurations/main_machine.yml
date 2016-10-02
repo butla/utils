@@ -1,9 +1,9 @@
 ---
 - name: main machine setup
   hosts: localhost
-  become: true
 
   roles:
-  - common
+  - { role: common, become: true }
   - dev_machine
+  - kubuntu
 

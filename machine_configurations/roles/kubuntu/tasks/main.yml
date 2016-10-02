@@ -1,0 +1,35 @@
+---
+- name: set konsole settings
+  copy: src=konsole/{{ item.src }} dest={{ item.dest }}
+  vars:
+    konsole_share: "{{ user_home }}/.local/share/konsole"
+  with_items:
+  - { src: Butla.profile, dest: '{{ konsole_share }}' }
+  - { src: Linux.colorscheme, dest: '{{ konsole_share }}' }
+  - { src: konsolerc, dest: "{{ user_home }}/.config" }
+
+# KUBUNTU
+#- dropbox (deb ze strony)
+#- keepass2. Ustawić bazę z Dropboxa, ustawić opcję autolocka po 5 minutach.
+# configi z dropboxa!
+#- import moich skrótów
+# bookmarks w rangerze - development, downloads, Dropbox
+#  vlc, gthumb, chromium-browser, clementine, synaptic, gimp, inkscape (trzeba dodać ppa), hunspell
+
+#- polskie ustawienia daty, liczb, itp (ale nie cały region)
+#- zegar z sekundami i datą, bold
+#- sterowniki do grafiki (powinno sprawdzać, czy jest nvidia, czy radeon)
+#- system setting/startup and shutdown/"start with an empty sesssion", też default leave option: turn off computer
+#- "Configure automatic handling of removable storage media" -> "Enable automatic mounting of removable media"
+#- schować w treyu: komunikatory, organizer deamon
+#- w vlc przewijanie na strzałki, zamiast shift+strzałki. Navigate left/right ustawić na shift+strzałki.
+#- docker (install ze skryptu i restart)
+#- apt install sshpass (żeby można było konfigurować raspberry)
+# pycharm z ustawieniami
+
+# GŁÓWNY
+# mount danych
+# klucz prywatny do backupów
+# backup (już nic do dropboxa, wszystko na dysk)
+# bookmarks w rangerze
+
