@@ -1,4 +1,6 @@
 ---
+# TODO when hostname == b3 then font size 11
+
 - name: set konsole settings
   copy: src=konsole/{{ item.src }} dest={{ item.dest }}
   vars:
@@ -19,6 +21,8 @@
 - name: install python-gpgme for dropbox bootstrap
   apt: name=python-gpgme
   become: true
+
+# TODO separate out kubuntu stuff from general PC with GUI
 
 # TODO get rid of unauthorized deb workaround when they fix it
 #- name: install dropbox
@@ -87,9 +91,43 @@
   - { line: "w:{{ ansible_env.HOME }}/development", regexp: "^w:" }
   - { line: "h:{{ ansible_env.HOME }}", regexp: "^h:" }
 
-# TODO copy khotkeysrc do .config/
-# TODO ustaw w kglobalshortcutsrc wartosci z roznice_global_shortcuts
-# TODO launcher chyba trzeba ustawić w plasma-org.kde.plasma.desktop-appletsrc, pod [Containments][1][Applets][2][Shortcuts]
+- name: set custom shortcuts
+  copy: src=khotkeysrc dest={{ ansible_env.HOME }}/.config
+
+# TODO co ze sccreenshotami? sa domyslne ustaione?
+- name: modify global shortcuts
+  lineinfile:
+    dest: "{{ ansible_env.HOME }}/.config/kglobalshortcutsrc"
+    line: "{{ item.line }}"
+    regexp: "{{ item.regexp }}"
+  with_items:  
+  - { line: 'Lock Session=Meta+L,none,Lock Session', regexp: '^Lock Session=' }
+  - { line: 'MoveZoomDown=none,none,Move Zoomed Area Downwards', regexp: '^MoveZoomDown=' }
+  - { line: 'Show Desktop=Meta+D,none,Show Desktop', regexp: '^Show Desktop=' }
+  - line: 'Walk Through Windows=Alt+Tab,none,Walk Through Windows'
+    regexp: '^Walk Through Windows='
+  - line: 'Walk Through Windows (Reverse)=Alt+Shift+Backtab,none,Walk Through Windows (Reverse)'
+    regexp: '^Walk Through Windows \(Reverse\)='
+  - { line: 'Window Maximize=Meta+Up,none,Maximize Window', regexp: '^Window Maximize=' }
+  - { line: 'Window Minimize=Meta+Down,none,Minimize Window', regexp: '^Window Minimize=' }
+  - line: 'Window Quick Tile Left=Meta+Left,none,Quick Tile Window to the Left'
+    regexp: '^Window Quick Tile Left='
+  - line: 'Window Quick Tile Right=Meta+Right,none,Quick Tile Window to the Right'
+    regexp: '^Window Quick Tile Right='
+  - line: 'Window to Next Screen=Meta+Shift+Left,none,Window to Next Screen'
+    regexp: '^Window to Next Screen='
+  - line: 'Window to Previous Screen=Meta+Shift+Right,none,Window to Previous Screen'
+    regexp: '^Window to Previous Screen='
+  - line: 'activate widget 2=Meta+Q,none,Activate Application Launcher Widget'
+    regexp: '.*Activate Application Launcher Widget$'
+  - line: 'manage activities=none,Meta+Q,Activities...'
+    regexp: '^manage activities='
+
+- name: modify laucher hotkey
+  replace:
+    dest: "{{ ansible_env.HOME }}/.config/plasma-org.kde.plasma.desktop-appletsrc"
+    regexp: '\[Containments\]\[1\]\[Applets\]\[2\]\[Shortcuts\]\nglobal=.*'
+    replace: '[Containments][1][Applets][2][Shortcuts]\nglobal=Meta+Q'
 
 # KUBUNTU
 # kalkulator na guzik kalkulatora

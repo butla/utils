@@ -120,8 +120,10 @@
   file: path={{ user_home }}/bin state=directory
 
 - name: copy tmux editting script
-  copy: src=tmux_edit.sh dest={{ user_home }}/bin
-  mode: "u=xrw,g=xr,o=xr"
+  copy:
+    src: tmux_edit.sh
+    dest: "{{ user_home }}/bin"
+    mode: "u=xrw,g=xr,o=xr"
 
 - name: ssh config folder
   file: path={{ user_home }}/.ssh state=directory
