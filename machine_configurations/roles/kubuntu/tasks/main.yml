@@ -1,12 +1,27 @@
 ---
-# TODO when hostname == b3 then font size 11
+- name: decide if on laptop
+  command: hostname
+  register: host_name
+  changed_when: False
+
+- set_fact: konsole_conf_dir={{ ansible_env.HOME }}/.local/share/konsole
+
+- name: set desktop konsole font size
+  when: host_name.stdout != 'b3'
+  set_fact: konsole_font_size=10
+
+- name: set laptop konsole font size
+  when: host_name.stdout == 'b3'
+  set_fact: konsole_font_size=11
+
+- name: set konsole profile
+  template: src=Butla.profile dest={{ konsole_conf_dir }}
+
 - name: set konsole settings
   copy: src=konsole/{{ item.src }} dest={{ item.dest }}
-  vars:
-    konsole_share: "{{ ansible_env.HOME }}/.local/share/konsole"
   with_items:
-  - { src: Butla.profile, dest: '{{ konsole_share }}' }
-  - { src: Linux.colorscheme, dest: '{{ konsole_share }}' }
+  - { src: Linux.colorscheme, dest: "{{ ansible_env.HOME }}/.local/share/konsole" }
+  # this will report getting changed after system reboot
   - { src: konsolerc, dest: "{{ ansible_env.HOME }}/.config" }
 
 - name: set custom shortcuts
@@ -18,10 +33,11 @@
     dest: "{{ ansible_env.HOME }}/.config/kglobalshortcutsrc"
     line: "{{ item.line }}"
     regexp: "{{ item.regexp }}"
-  with_items:  
+  with_items:
+  # first three are getting changed by system at reboot, but they work fine...
   - { line: 'Lock Session=Meta+L,none,Lock Session', regexp: '^Lock Session=' }
   - { line: 'MoveZoomDown=none,none,Move Zoomed Area Downwards', regexp: '^MoveZoomDown=' }
-  - { line: 'Show Desktop=Meta+D,none,Show Desktop', regexp: '^Show Desktop=' }
+  - { line: 'show dashboard=Meta+D,none,Show Desktop', regexp: '^show dashboard=' }
   - line: 'Walk Through Windows=Alt+Tab,none,Walk Through Windows'
     regexp: '^Walk Through Windows='
   - line: 'Walk Through Windows (Reverse)=Alt+Shift+Backtab,none,Walk Through Windows (Reverse)'
