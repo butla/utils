@@ -137,3 +137,6 @@
   - { src: id_rsa, mode: "u=rw,g-rwx,o-rwx" }
   - { src: id_rsa.pub, mode: "u=rw,g=r,o=r" }
 
+- name: create develompent directory
+  file: path={{ ansible_env.HOME }}/development state=directory
+
