@@ -1,4 +1,7 @@
 ---
+# TODO check if too much clementine's config comes from B2
+# TODO gimp single window mode
+
 - name: add dropbox repository
   apt_repository: repo='deb http://linux.dropbox.com/ubuntu xenial main'
   become: true
