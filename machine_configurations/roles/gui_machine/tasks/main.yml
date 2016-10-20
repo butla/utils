@@ -1,6 +1,8 @@
 ---
 # TODO check if too much clementine's config comes from B2
 # TODO gimp single window mode
+# TODO configure VLC
+# video - start fullscreen
 
 - name: add dropbox repository
   apt_repository: repo='deb http://linux.dropbox.com/ubuntu xenial main'
@@ -77,4 +79,21 @@
   - { line: "D:{{ ansible_env.HOME }}/Downloads", regexp: "^D:" }
   - { line: "w:{{ ansible_env.HOME }}/development", regexp: "^w:" }
   - { line: "h:{{ ansible_env.HOME }}", regexp: "^h:" }
+
+- name: decide if on laptop
+  command: hostname
+  register: host_name
+  changed_when: False
+
+- set_fact: on_laptop={{ host_name.stdout == 'b3' }}
+
+- name: add nvidia drivers ppa
+  apt_repository: repo=ppa:graphics-drivers/ppa
+  become: true
+  when: not on_laptop 
+
+- name: install recommended drivers for GTX-560 Ti
+  apt: name=nvidia-370 update_cache=yes
+  become: true
+  when: not on_laptop 
 

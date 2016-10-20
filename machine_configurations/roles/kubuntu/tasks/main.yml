@@ -1,18 +1,28 @@
 ---
-- name: decide if on laptop
-  command: hostname
-  register: host_name
-  changed_when: False
+- name: switch compositor to opengl3.1
+  lineinfile:
+    dest: "{{ ansible_env.HOME }}/.config/kwinrc"
+    line: GLCore=true
+    regexp: '^GLCore='
 
-- set_fact: konsole_conf_dir={{ ansible_env.HOME }}/.local/share/konsole
+- name: prevent tearing on pc
+  when: not on_laptop
+  become: true
+  lineinfile:
+    dest: /etc/profile.d/tearing.sh
+    line: export KWIN_TRIPLE_BUFFER=1
+    regexp: '^export KWIN_TRIPLE_BUFFER='
+    create: yes
 
 - name: set desktop konsole font size
-  when: host_name.stdout != 'b3'
+  when: not on_laptop
   set_fact: konsole_font_size=10
 
 - name: set laptop konsole font size
-  when: host_name.stdout == 'b3'
+  when: on_laptop
   set_fact: konsole_font_size=11
+
+- set_fact: konsole_conf_dir={{ ansible_env.HOME }}/.local/share/konsole
 
 - name: set konsole profile
   template: src=Butla.profile dest={{ konsole_conf_dir }}
@@ -27,7 +37,6 @@
 - name: set custom shortcuts
   copy: src=khotkeysrc dest={{ ansible_env.HOME }}/.config
 
-# TODO co ze sccreenshotami? sa domyslne ustaione?
 - name: modify global shortcuts
   lineinfile:
     dest: "{{ ansible_env.HOME }}/.config/kglobalshortcutsrc"
@@ -68,16 +77,15 @@
 
 #- polskie ustawienia daty, liczb, itp (ale nie cały region)
 #- zegar z sekundami i datą, bold
-#- sterowniki do grafiki (powinno sprawdzać, czy jest nvidia, czy radeon) / cos, zeby video dobrze chodzilo?
 #- system setting/startup and shutdown/"start with an empty sesssion", też default leave option: turn off computer
 #- "Configure automatic handling of removable storage media" -> "Enable automatic mounting of removable media"
 #- schować w treyu: komunikatory, organizer deamon
 #- w vlc przewijanie na strzałki, zamiast shift+strzałki. Navigate left/right ustawić na shift+strzałki.
-#- docker (install ze skryptu i restart)
+#- docker (install z ppa?)
 #- apt install sshpass (żeby można było konfigurować raspberry)
 # pycharm z ustawieniami
-# pycharm i keepass do favouritów
-# wyłączenie launchera
+# pycharm, keepass, ktorrent do favouritów
+# wyłączenie launchera na lapku
 
 # GŁÓWNY
 # mount danych
