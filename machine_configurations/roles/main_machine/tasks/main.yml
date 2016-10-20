@@ -1,0 +1,19 @@
+---
+- name: set clementine library
+  ini_file:
+    dest: "{{ ansible_env.HOME }}/.config/Clementine/Clementine.conf"
+    section: LibraryConfig
+    option: last_path
+    value: /media/butla/Dane/Muzyka
+
+- name: set ranger bookmark for data drive
+  lineinfile:
+    dest: "{{ ansible_env.HOME }}/.config/ranger/bookmarks"
+    line: "d:/media/butla/Dane"
+    regexp: "^d:"
+    create: yes
+
+# TODO
+# klucz prywatny do backupów
+# backup (już nic do dropboxa, wszystko na dysk)
+# thunderbird i ustawienie jego backup, muszę zgrać jego dotychczasowe wiadomości?

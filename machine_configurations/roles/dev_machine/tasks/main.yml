@@ -17,6 +17,7 @@
   - python3-dev
   - python-pip
   - python-dev
+  - sshpass # so that Ansible can log in using password (needed in RPi configuration)
   - ranger
   - tmux
   - tree

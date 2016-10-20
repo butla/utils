@@ -66,30 +66,64 @@
   - line: 'manage activities=none,Meta+Q,Activities...'
     regexp: '^manage activities='
 
+- set_fact: plasma_conf={{ ansible_env.HOME }}/.config/plasma-org.kde.plasma.desktop-appletsrc
+
 - name: modify laucher hotkey
-  replace:
-    dest: "{{ ansible_env.HOME }}/.config/plasma-org.kde.plasma.desktop-appletsrc"
-    regexp: '\[Containments\]\[1\]\[Applets\]\[2\]\[Shortcuts\]\nglobal=.*'
-    replace: '[Containments][1][Applets][2][Shortcuts]\nglobal=Meta+Q'
+  command: >
+    kwriteconfig5 --file {{ plasma_conf }}
+    --group Containments --group 1 --group Applets --group 2 --group Shortcuts
+    --key global Meta+Q
 
-# KUBUNTU
-# kalkulator na guzik kalkulatora
+- name: set each session to start clean
+  lineinfile:
+    dest: "{{ ansible_env.HOME }}/.config/ksmserverrc"
+    line: loginMode=default
+    regexp: '^loginMode='
 
-#- polskie ustawienia daty, liczb, itp (ale nie cały region)
-#- zegar z sekundami i datą, bold
-#- system setting/startup and shutdown/"start with an empty sesssion", też default leave option: turn off computer
-#- "Configure automatic handling of removable storage media" -> "Enable automatic mounting of removable media"
-#- schować w treyu: komunikatory, organizer deamon
-#- w vlc przewijanie na strzałki, zamiast shift+strzałki. Navigate left/right ustawić na shift+strzałki.
-#- docker (install z ppa?)
-#- apt install sshpass (żeby można było konfigurować raspberry)
-# pycharm z ustawieniami
-# pycharm, keepass, ktorrent do favouritów
-# wyłączenie launchera na lapku
+- name: hide communicator and korganizer in trey
+  command: >
+    kwriteconfig5 --file {{ plasma_conf }}
+    --group Containments --group 1 --group Applets --group 5 --group Configuration --group General
+    --key hiddenItems "org.kde.ktp-contactlist,KOrganizer Reminder Daemon"
 
-# GŁÓWNY
-# mount danych
-# klucz prywatny do backupów
-# backup (już nic do dropboxa, wszystko na dysk)
-# bookmarks w rangerze
-# thunderbird i ustawienie jego backup, muszę zgrać jego dotychczasowe wiadomości?
+- name: set clock appearance
+  command: >
+    kwriteconfig5 --file {{ plasma_conf }}
+    --group Containments --group 1 --group Applets --group 6 --group Configuration --group Appearance
+    --key {{ item.key }} {{ item.value }}
+  with_items:
+  - { key: boldText, value: 'true' }
+  - { key: dateFormat, value: isoDate }
+  - { key: showDate, value: 'true' }
+  - { key: showSeconds, value: 'true' }
+
+- name: set automatic mounting of removable media
+  command: >
+    kwriteconfig5 --file {{ ansible_env.HOME }}/.config/kded_device_automounterrc
+    --group General--key AutomountEnabled true
+
+- name: disable splash screen on laptop
+  when: on_laptop
+  command: >
+    kwriteconfig5 --file {{ ansible_env.HOME }}/.config/ksplashrc
+    --group KSplash --key {{ item.key }} {{ item.value }}
+  with_items:
+  - { key: Engine, value: 'none' }
+  - { key: Theme, value: 'None' }
+
+- name: set power management options
+  command: >
+    kwriteconfig5 --file {{ ansible_env.HOME }}/.config/powermanagementprofilesrc
+    --group AC --group {{ item.group }} --key {{ item.key }} {{ item.value }}
+  with_items:
+  - { group: DPMSControl, key: idleTime, value: 720 }
+  - { group: DimDisplay, key: idleTime, value: 600000 }
+  - { group: SuspendSession, key: idleTime, value: 1200000 }
+  - { group: SuspendSession, key: suspendType, value: 1 }
+
+- name: set favourites menu
+  command: >
+    kwriteconfig5 --file {{ plasma_conf }}
+    --group Containments --group 1 --group Applets --group 2 --group Configuration --group General
+    --key favorites pycharm-community.desktop,keepass2.desktop,kde4-ktorrent.desktop
+
