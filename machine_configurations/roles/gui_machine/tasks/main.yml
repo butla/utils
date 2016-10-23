@@ -58,6 +58,8 @@
   - inkscape
   # user needs to log in with Dropbox before running keepass
   - keepass2
+  # for compiling stuff like cryptography for different Python versions
+  - libssl-dev
   - pycharm-community
   - python3.4
   - python3.4-dev
