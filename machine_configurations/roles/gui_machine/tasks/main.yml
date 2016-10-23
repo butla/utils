@@ -40,6 +40,10 @@
   become: true
   apt_repository: repo=ppa:mystic-mirage/pycharm
 
+- name: add alternative python versions repository
+  become: true
+  apt_repository: repo=ppa:fkrull/deadsnakes
+
 - name: install additional programs
   become: true
   apt: name={{ item }} update_cache=yes cache_valid_time=3600
@@ -55,6 +59,8 @@
   # user needs to log in with Dropbox before running keepass
   - keepass2
   - pycharm-community
+  - python3.4
+  - python3.4-dev
   - synaptic
   - vlc
 
