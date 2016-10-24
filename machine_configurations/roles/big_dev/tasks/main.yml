@@ -1,0 +1,29 @@
+---
+- name: install additional programs
+  become: true
+  apt: name={{ item }} update_cache=yes cache_valid_time=3600
+  with_items:
+  - docker.io
+  - hunspell
+  # for compiling stuff like cryptography for different Python versions
+  - libssl-dev
+  - python3.4
+  - python3.4-dev
+  - whois
+
+- name: add user to docker group
+  become: true
+  user: name={{ ansible_env.USER }} groups=docker append=yes
+
+- name: create GnuPG config directory
+  file: path={{ ansible_env.HOME }}/.gnupg state=directory
+
+- name: set configuration in HOME directory
+  copy: src={{ item }} dest={{ ansible_env.HOME }}
+  with_items:
+  - .gnupg
+  - .pypirc
+
+- name: install twine
+  pip: name=twine executable=pip3 extra_args=--user
+

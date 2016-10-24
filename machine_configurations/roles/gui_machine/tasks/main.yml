@@ -50,37 +50,14 @@
   with_items:
   - chromium-browser
   - clementine
-  # could be installed on non-GUI machine, but those with GUI tend to be stronger
-  - docker.io 
   - gimp
   - gthumb
-  - hunspell
   - inkscape
   # user needs to log in with Dropbox before running keepass
   - keepass2
-  # for compiling stuff like cryptography for different Python versions
-  - libssl-dev
   - pycharm-community
-  - python3.4
-  - python3.4-dev
   - synaptic
   - vlc
-
-- name: add user to docker group
-  become: true
-  user: name={{ ansible_env.USER }} groups=docker append=yes
-
-- name: create GnuPG config directory
-  file: path={{ ansible_env.HOME }}/.gnupg state=directory
-
-- name: set configuration in HOME directory
-  copy: src={{ item }} dest={{ ansible_env.HOME }}
-  with_items:
-  - .gnupg
-  - .pypirc
-
-- name: install twine
-  pip: name=twine executable=pip3 extra_args=--user
 
 - name: set ranger bookmarks
   lineinfile:

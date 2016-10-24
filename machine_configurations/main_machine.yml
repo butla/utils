@@ -3,8 +3,4 @@
   hosts: localhost
 
   roles:
-  - { role: common, become: true }
-  - dev_machine
-  - gui_machine
-  - kubuntu
   - main_machine
