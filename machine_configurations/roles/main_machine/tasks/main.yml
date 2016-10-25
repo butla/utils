@@ -6,12 +6,16 @@
     option: last_path
     value: /media/butla/Dane/Muzyka
 
-- name: set ranger bookmark for data drive
+- name: set ranger bookmarks
   lineinfile:
     dest: "{{ ansible_env.HOME }}/.config/ranger/bookmarks"
-    line: "d:/media/butla/Dane"
-    regexp: "^d:"
+    line: "{{ item.line }}"
+    regexp: "{{ item.regexp }}"
     create: yes
+  with_items:
+  - { line: "d:/media/butla/Dane", regexp: "^d:" }
+  - { line: "f:/media/butla/Dane/Filmy", regexp: "^f:" }
+  - { line: "z:/media/butla/Dane/Zdjęcia (i trochę filmików)", regexp: "^z:" }
 
 # TODO
 # klucz prywatny do backupów
