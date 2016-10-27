@@ -127,3 +127,11 @@
     --group Containments --group 1 --group Applets --group 2 --group Configuration --group General
     --key favorites pycharm-community.desktop,keepass2.desktop,kde4-ktorrent.desktop
 
+# it's normally Alt and it messes with Pycharm square selection
+- name: set window control modifier button to meta
+  ini_file:
+    dest: "{{ ansible_env.HOME }}/.config/kwinrc"
+    section: MouseBindings
+    option: CommandAllKey
+    value: Meta
+
