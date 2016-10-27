@@ -91,16 +91,18 @@
 - name: set clementine settings
   ini_file:
     dest: "{{ ansible_env.HOME }}/.config/Clementine/Clementine.conf"
-    section: Player
+    section: "{{ item.section }}"
     option: "{{ item.option }}"
     value: "{{ item.value }}"
   with_items:
-  - { option: volume, value: 100 }
-  - { option: FadeoutEnabled, value: 'false' }
-  - { option: CrossfadeEnabled, value: 'false' }
-  - { option: AutoCrossfadeEnabled, value: 'false' }
-  - { option: NoCrossfadeSameAlbum, value: 'true' }
-  - { option: FadeoutPauseEnabled, value: 'false' }
+  - { section: Player, option: volume, value: 100 }
+  - { section: Player, option: FadeoutEnabled, value: 'false' }
+  - { section: Player, option: CrossfadeEnabled, value: 'false' }
+  - { section: Player, option: AutoCrossfadeEnabled, value: 'false' }
+  - { section: Player, option: NoCrossfadeSameAlbum, value: 'true' }
+  - { section: Player, option: FadeoutPauseEnabled, value: 'false' }
+  - { section: MainWindow, option: doubleclick_playmode, value: 3 }
+  - { section: MainWindow, option: startupbehaviour, value: 2 }
 
 - set_fact: pycharm_conf_dir={{ ansible_env.HOME }}/.PyCharm2016.2/config
 
