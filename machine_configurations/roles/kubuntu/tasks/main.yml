@@ -135,3 +135,10 @@
     option: CommandAllKey
     value: Meta
 
+- name: configure ktorrent
+  ini_file:
+    dest: "{{ ansible_env.HOME }}/.kde/share/config/ktorrentrc"
+    section: downloads
+    option: dhtSupport
+    value: true
+
