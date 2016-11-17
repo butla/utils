@@ -26,5 +26,5 @@
   - .pypirc
 
 - name: install twine
-  pip: name=twine executable=pip3 extra_args=--user
+  pip: name=twine executable=pip3 state=latest extra_args=--user
 

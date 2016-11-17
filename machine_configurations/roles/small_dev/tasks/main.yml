@@ -34,10 +34,22 @@
   pip: name=pip executable=pip2 state=latest
   become: true
 
+# before python3 tools so that ptpython will default to python3
+- name: install python 2 tools
+  pip:
+    name: "{{ item }}"
+    executable: pip2
+    state: latest
+    extra_args: --user
+  with_items:
+  - ptpython
+  - pudb
+
 - name: install python tools
   pip:
     name: "{{ item }}"
     executable: pip3
+    state: latest
     extra_args: --user
   with_items:
   - httpie
@@ -46,15 +58,6 @@
   - subliminal
   - tox
   - virtualenvwrapper
-
-- name: install python 2 tools
-  pip:
-    name: "{{ item }}"
-    executable: pip2
-    extra_args: --user
-  with_items:
-  - bpython # to use with 2, because ptpython will work with 3
-  - pudb
 
 - name: setup tmux plugins
   git: repo=https://github.com/tmux-plugins/tpm dest={{ user_home }}/.tmux/plugins/tpm
