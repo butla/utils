@@ -57,6 +57,11 @@
   - keepass2
   - pycharm-community
   - synaptic
+  - texlive
+  - texlive-generic-extra
+  - texlive-lang-english
+  - texlive-lang-polish
+  - texlive-latex-extra
   - vlc
 
 - name: set ranger bookmarks
