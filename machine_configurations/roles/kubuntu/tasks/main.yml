@@ -1,4 +1,12 @@
 ---
+- name: enable ubuntu partners repo for skype
+  become: true
+  apt_repository: repo="deb http://archive.canonical.com/ubuntu {{ ansible_distribution_release }} partner"
+
+- name: install skype
+  become: true
+  apt: name=skype update_cache=yes
+
 - name: switch compositor to opengl3.1
   lineinfile:
     dest: "{{ ansible_env.HOME }}/.config/kwinrc"
