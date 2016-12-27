@@ -958,7 +958,7 @@ Uuid={bcc12d10-c126-4273-b58c-3d5038caf086}
 
 [Data_5]
 Comment=Comment
-DataCount=6
+DataCount=7
 Enabled=true
 Name=Moje
 SystemGroup=0
@@ -1123,6 +1123,32 @@ TriggersCount=1
 Key=Launch (1)
 Type=SHORTCUT
 Uuid={bd102371-99b4-4d55-acb1-bd8a67902c5e}
+
+[Data_5_7]
+Comment=Comment
+Enabled=true
+Name=Run keepass
+Type=SIMPLE_ACTION_DATA
+
+[Data_5_7Actions]
+ActionsCount=1
+
+[Data_5_7Actions0]
+CommandURL=keepass2
+Type=COMMAND_URL
+
+[Data_5_7Conditions]
+Comment=
+ConditionsCount=0
+
+[Data_5_7Triggers]
+Comment=Simple_action
+TriggersCount=1
+
+[Data_5_7Triggers0]
+Key=Meta+3
+Type=SHORTCUT
+Uuid={f80bf64c-deff-4bda-8f86-0f561e10d888}
 
 [Gestures]
 Disabled=true
