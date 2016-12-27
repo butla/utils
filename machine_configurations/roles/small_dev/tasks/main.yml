@@ -124,11 +124,14 @@
 - name: create user's bin folder
   file: path={{ user_home }}/bin state=directory
 
-- name: copy tmux editting script
+- name: copy utility scripts
   copy:
-    src: tmux_edit.sh
+    src: "{{ item }}"
     dest: "{{ user_home }}/bin"
     mode: "u=xrw,g=xr,o=xr"
+  with_items:
+  - tmux_edit.sh
+  - pull_all_repos.sh
 
 - name: ssh config folder
   file: path={{ user_home }}/.ssh state=directory
