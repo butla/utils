@@ -13,6 +13,7 @@
     password: "{{ server_user_password }}"
   remote_user: pi
   vars:
+    ansible_ssh_pass: raspberry
     ansible_become_pass: raspberry
 
 - name: set server user authorized ssh key
@@ -21,6 +22,7 @@
   remote_user: pi
   become_user: "{{ server_user }}"
   vars:
+    ansible_ssh_pass: raspberry
     ansible_become_pass: raspberry
 
 - name: kill pi user processes
