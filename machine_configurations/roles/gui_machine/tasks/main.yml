@@ -36,9 +36,15 @@
   become: true
   apt_repository: repo=ppa:inkscape.dev/stable
 
+- name: add pycharm repository key
+  become: true
+  apt_key:
+    url: http://archive.getdeb.net/getdeb-archive.key
+    state: present
+
 - name: add pycharm repository
   become: true
-  apt_repository: repo=ppa:mystic-mirage/pycharm
+  apt_repository: repo="deb http://archive.getdeb.net/ubuntu xenial-getdeb apps"
 
 - name: add alternative python versions repository
   become: true
@@ -55,7 +61,7 @@
   - inkscape
   # user needs to log in with Dropbox before running keepass
   - keepass2
-  - pycharm-community
+  - pycharm
   - synaptic
   - texlive
   - texlive-generic-extra
