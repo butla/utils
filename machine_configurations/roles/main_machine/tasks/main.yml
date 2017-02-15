@@ -14,8 +14,8 @@
     create: yes
   with_items:
   - { line: "d:/media/butla/Dane", regexp: "^d:" }
-  - { line: "f:/media/butla/Dane/Filmy", regexp: "^f:" }
-  - { line: "z:/media/butla/Dane/Zdjęcia (i trochę filmików)", regexp: "^z:" }
+  - { line: "f:/media/butla/Dane/filmy", regexp: "^f:" }
+  - { line: "z:/media/butla/Dane/zdjęcia_i_filmiki", regexp: "^z:" }
 
 - name: install thunderbird
   become: true
