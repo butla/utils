@@ -60,3 +60,6 @@
   # 12 * 5 = 60 seconds
   command: hdparm -S 12 /dev/disk/by-uuid/3248F2D948F29AB5
 
+- name: install rsync
+  apt: name=rsync state=latest
+
