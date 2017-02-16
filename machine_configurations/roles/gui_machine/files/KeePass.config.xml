@@ -34,10 +34,10 @@
 	</Application>
 	<Logging />
 	<MainWindow>
-		<X>574</X>
-		<Y>343</Y>
-		<Width>771</Width>
-		<Height>513</Height>
+		<X>416</X>
+		<Y>341</Y>
+		<Width>1209</Width>
+		<Height>659</Height>
 		<SplitterHorizontalFrac>0.8333</SplitterHorizontalFrac>
 		<SplitterVerticalFrac>0.25</SplitterVerticalFrac>
 		<Layout>Default</Layout>
@@ -47,24 +47,24 @@
 		<EntryListColumnCollection>
 			<Column>
 				<Type>Title</Type>
-				<Width>106</Width>
+				<Width>241</Width>
 			</Column>
 			<Column>
 				<Type>UserName</Type>
-				<Width>106</Width>
+				<Width>331</Width>
 			</Column>
 			<Column>
 				<Type>Password</Type>
-				<Width>106</Width>
+				<Width>81</Width>
 				<HideWithAsterisks>true</HideWithAsterisks>
 			</Column>
 			<Column>
 				<Type>Url</Type>
-				<Width>106</Width>
+				<Width>166</Width>
 			</Column>
 			<Column>
 				<Type>Notes</Type>
-				<Width>106</Width>
+				<Width>56</Width>
 			</Column>
 		</EntryListColumnCollection>
 		<EntryListColumnDisplayOrder>0 1 2 3 4</EntryListColumnDisplayOrder>

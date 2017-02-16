@@ -4,7 +4,7 @@
     dest: "{{ ansible_env.HOME }}/.config/Clementine/Clementine.conf"
     section: LibraryConfig
     option: last_path
-    value: /media/butla/Dane/Muzyka
+    value: /media/butla/Dane/muzyka
 
 - name: set ranger bookmarks
   lineinfile:
