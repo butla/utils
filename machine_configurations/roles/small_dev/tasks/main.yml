@@ -148,3 +148,9 @@
 - name: create develompent directory
   file: path={{ ansible_env.HOME }}/development state=directory
 
+- name: setup auto-updates
+  become: true
+  copy:
+    src: auto-upgrade
+    dest: /etc/cron.daily
+    mode: "u=rwx,g=rx,o=rx"
