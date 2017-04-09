@@ -61,6 +61,7 @@
   - inkscape
   # user needs to log in with Dropbox before running keepass
   - keepass2
+  - pdfmod # for editing PDFs
   - pycharm
   - synaptic
   - texlive
