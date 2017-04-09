@@ -10,6 +10,9 @@
   - pandoc
   - python3.4
   - python3.4-dev
+  - vagrant
+  - vagrant-lxc
+  - virtualbox
   - whois
 
 - name: add user to docker group
