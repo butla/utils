@@ -76,7 +76,7 @@
 
 - set_fact: plasma_conf={{ ansible_env.HOME }}/.config/plasma-org.kde.plasma.desktop-appletsrc
 
-- name: modify laucher hotkey
+- name: modify launcher hotkey
   command: >
     kwriteconfig5 --file {{ plasma_conf }}
     --group Containments --group 1 --group Applets --group 2 --group Shortcuts
@@ -110,8 +110,8 @@
     kwriteconfig5 --file {{ ansible_env.HOME }}/.config/kded_device_automounterrc
     --group General--key AutomountEnabled true
 
-- name: disable splash screen on laptop
-  when: on_laptop
+# splash screen takes a long time after first connecting to something over HDMI
+- name: disable splash screen
   command: >
     kwriteconfig5 --file {{ ansible_env.HOME }}/.config/ksplashrc
     --group KSplash --key {{ item.key }} {{ item.value }}
