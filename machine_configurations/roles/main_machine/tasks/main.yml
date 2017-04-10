@@ -17,16 +17,6 @@
   - { line: "f:/media/butla/Dane/filmy", regexp: "^f:" }
   - { line: "z:/media/butla/Dane/zdjęcia_i_filmiki", regexp: "^z:" }
 
-- name: install thunderbird
-  become: true
-  apt: name=thunderbird
-
-- name: set favourites menu
-  command: >
-    kwriteconfig5 --file {{ plasma_conf }}
-    --group Containments --group 1 --group Applets --group 2 --group Configuration --group General
-    --key favorites pycharm.desktop,kde4-ktorrent.desktop,thunderbird.desktop
-
 # TODO
 # klucz prywatny do backupów
 # backup (dokumenty do dropboxa, reszta na dysk)
