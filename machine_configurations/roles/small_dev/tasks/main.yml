@@ -117,6 +117,7 @@
   - { line: "set show_hidden true", regexp: "set show_hidden .+" }
   - { line: "set collapse_preview false", regexp: "set collapse_preview" }
   - { line: "set dirname_in_tabs true", regexp: "set dirname_in_tabs" }
+  - { line: "set confirm_on_delete multiple", regexp: "set confirm_on_delete" }
 
 - name: ranger settings in rifle.conf
   copy: src=rifle.conf dest={{ user_home }}/.config/ranger
