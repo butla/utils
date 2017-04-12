@@ -58,13 +58,13 @@
   - clementine
   - gimp
   - gthumb
+  - hplip  # HP printer/scanner drivers
   - inkscape
   # user needs to log in with Dropbox before running keepass
   - keepass2
-  - pdfmod # for editing PDFs
+  - pdfmod  # for editing PDFs
   - pycharm
-  # for scanner usage; backed by SANE
-  - simple-scan
+  - simple-scan  # for scanner usage; backed by SANE
   - synaptic
   - texlive
   - texlive-generic-extra
