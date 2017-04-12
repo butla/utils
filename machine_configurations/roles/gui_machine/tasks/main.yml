@@ -63,6 +63,8 @@
   - keepass2
   - pdfmod # for editing PDFs
   - pycharm
+  # for scanner usage; backed by SANE
+  - simple-scan
   - synaptic
   - texlive
   - texlive-generic-extra
