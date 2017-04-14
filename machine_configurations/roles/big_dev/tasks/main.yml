@@ -1,4 +1,8 @@
 ---
+- name: add alternative python versions repository
+  become: true
+  apt_repository: repo=ppa:fkrull/deadsnakes
+
 - name: install additional programs
   become: true
   apt: name={{ item }} update_cache=yes cache_valid_time=3600
@@ -8,6 +12,8 @@
   # for compiling stuff like cryptography for different Python versions
   - libssl-dev
   - pandoc
+  - python3.6
+  - python3.6-dev
   - python3.4
   - python3.4-dev
   - vagrant

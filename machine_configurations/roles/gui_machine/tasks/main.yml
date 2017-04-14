@@ -46,10 +46,6 @@
   become: true
   apt_repository: repo="deb http://archive.getdeb.net/ubuntu xenial-getdeb apps"
 
-- name: add alternative python versions repository
-  become: true
-  apt_repository: repo=ppa:fkrull/deadsnakes
-
 - name: install additional programs
   become: true
   apt: name={{ item }} update_cache=yes cache_valid_time=3600
