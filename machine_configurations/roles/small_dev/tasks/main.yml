@@ -64,16 +64,6 @@
 - name: setup tmux plugins
   git: repo=https://github.com/tmux-plugins/tpm dest={{ user_home }}/.tmux/plugins/tpm
 
-- name: set configuration files
-  copy: src={{ item }} dest={{ user_home }}
-  with_items:
-  - .bash_aliases
-  - .bashrc
-  - .gitconfig
-  - .ptpython
-  - .tmux.conf
-  - .vimrc
-
 - name: create config work and development folders
   file: path={{ item }} state=directory
   with_items:
@@ -84,6 +74,22 @@
   - "{{ user_home }}/.ssh"
   - "{{ user_home }}/bin"
   - "{{ user_home }}/development"
+
+- name: get git prompt
+  get_url:
+    url: https://github.com/git/git/raw/master/contrib/completion/git-prompt.sh
+    dest: "{{ user_home }}/bin/git-prompt.sh"
+    mode: 0755
+
+- name: set configuration files
+  copy: src={{ item }} dest={{ user_home }}
+  with_items:
+  - .bash_aliases
+  - .bashrc
+  - .gitconfig
+  - .ptpython
+  - .tmux.conf
+  - .vimrc
 
 - name: set pudb config
   copy: src=pudb.cfg dest={{ user_home }}/.config/pudb
