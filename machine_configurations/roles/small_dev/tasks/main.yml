@@ -10,6 +10,7 @@
   with_items:
   - curl
   - expect # needed for unbuffer tool used in ranger config creation hack
+  - fish
   - git
   - highlight # syntax coloring in ranger file preview
   - nmap
@@ -58,9 +59,40 @@
   - subliminal
   - tox
   - virtualenvwrapper
+  - virtualfish
 
 - name: setup tmux plugins
   git: repo=https://github.com/tmux-plugins/tpm dest={{ user_home }}/.tmux/plugins/tpm
+
+- name: set configuration files
+  copy: src={{ item }} dest={{ user_home }}
+  with_items:
+  - .bash_aliases
+  - .bashrc
+  - .gitconfig
+  - .ptpython
+  - .tmux.conf
+  - .vimrc
+
+- name: create config work and development folders
+  file: path={{ item }} state=directory
+  with_items:
+  - "{{ user_home }}/.config/pudb"
+  - "{{ user_home }}/.config/fish"
+  - "{{ user_home }}/.config/fish/functions"
+  - "{{ user_home }}/.ptpython"
+  - "{{ user_home }}/.ssh"
+  - "{{ user_home }}/bin"
+  - "{{ user_home }}/development"
+
+- name: set pudb config
+  copy: src=pudb.cfg dest={{ user_home }}/.config/pudb
+
+- name: set fish config
+  copy: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+  - { src: "fish/config.fish", dest: "{{ user_home }}/.config/fish" }
+  - { src: "fish/fish_prompt.fish", dest: "{{ user_home }}/.config/fish/functions" }
 
 - name: create directories for vim plugins
   file: path={{ user_home }}/.vim/{{ item }} state=directory
@@ -77,25 +109,6 @@
   git:
     repo: https://github.com/davidhalter/jedi-vim.git
     dest: "{{ user_home }}/.vim/bundle/jedi-vim"
-
-- name: create ptpython config folder
-  file: path={{ user_home }}/.ptpython state=directory
-
-- name: set configuration files
-  copy: src={{ item }} dest={{ user_home }}
-  with_items:
-  - .bash_aliases
-  - .bashrc
-  - .gitconfig
-  - .ptpython
-  - .tmux.conf
-  - .vimrc
-
-- name: create pudb config folder
-  file: path={{ user_home }}/.config/pudb state=directory
-
-- name: set pudb config
-  copy: src=pudb.cfg dest={{ user_home }}/.config/pudb
 
 - name: create ranger configs
   # unbuffer is used to fake a interactive terminal,
@@ -122,9 +135,6 @@
 - name: ranger settings in rifle.conf
   copy: src=rifle.conf dest={{ user_home }}/.config/ranger
 
-- name: create user's bin folder
-  file: path={{ user_home }}/bin state=directory
-
 - name: copy utility scripts
   copy:
     src: "{{ item }}"
@@ -134,9 +144,6 @@
   - tmux_edit.sh
   - pull_all_repos.sh
 
-- name: ssh config folder
-  file: path={{ user_home }}/.ssh state=directory
-
 - name: set ssh key
   copy:
     src: "{{ item.src }}"
@@ -145,9 +152,6 @@
   with_items:
   - { src: id_rsa, mode: "u=rw,g-rwx,o-rwx" }
   - { src: id_rsa.pub, mode: "u=rw,g=r,o=r" }
-
-- name: create develompent directory
-  file: path={{ ansible_env.HOME }}/development state=directory
 
 - name: setup auto-updates
   become: true
