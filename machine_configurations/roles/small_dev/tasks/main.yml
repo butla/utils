@@ -54,6 +54,7 @@
     state: latest
     extra_args: --user
   with_items:
+  - cookiecutter
   - httpie
   - ptpython
   - pudb
