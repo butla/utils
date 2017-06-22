@@ -149,7 +149,6 @@
     dest: "{{ user_home }}/bin"
     mode: "u=xrw,g=xr,o=xr"
   with_items:
-  - tmux_edit.sh
   - pull_all_repos.sh
 
 - name: set ssh key
