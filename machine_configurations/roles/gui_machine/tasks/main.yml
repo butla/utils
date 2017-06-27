@@ -58,6 +58,7 @@
   - inkscape
   # user needs to log in with Dropbox before running keepass
   - keepass2
+  - meld  # visual git merge tool
   - pdfmod  # for editing PDFs
   - pycharm
   - simple-scan  # for scanner usage; backed by SANE
@@ -138,3 +139,11 @@
   - { line: 'key-nav-right=Shift+Right', regexp: 'key-nav-right=' }
   - { line: 'fullscreen=1', regexp: 'fullscreen=' }
 
+- name: configure git diff tool
+  git_config:
+    name: '{{ item.option }}'
+    value: '{{ item.value }}'
+    scope: global
+  with_items:
+  - { option: diff.tool, value: meld }
+  - { option: difftool.prompt, value: false }
