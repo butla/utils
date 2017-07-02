@@ -1,6 +1,0 @@
----
-- name: laptop setup
-  hosts: localhost
-
-  roles:
-  - kubuntu

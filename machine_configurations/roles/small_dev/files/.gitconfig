@@ -1,7 +1,0 @@
-[user]
-	email = michalbultrowicz@gmail.com
-	name = Michal Bultrowicz
-[push]
-	default = simple
-[core]
-	editor = vim
